@@ -11,7 +11,8 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js'></script>
 <script src="js/index.js"></script>
 
-<body class="flex flex-col h-screen justify-between">
+<body>
+  <!-- <body class="flex flex-col h-screen justify-between"> -->
   <header class="text-gray-600 body-font">
     <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
       <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
@@ -59,6 +60,14 @@
             <h1 class="title-font sm:text-9xl text-6xl font-black text-white">-</h1>
             <p class="leading-relaxed font-medium mb-3">°C</p>
             <p class="leading-relaxed font-thin mb-3">Last Updated: - </p>
+          </div>
+        </div>
+        <div class="p-4 h-full w-full lg:w-1/1">
+          <div
+            class="h-full shadow-lg bg-gray-200 bg-opacity-100 px-10 pt-16 pb-16 rounded-3xl overflow-hidden text-left relative">
+            <h2 class="tracking-widest text-lg title-font font-bold text-gray-600 mb-1">History Chart</h2>
+            <div id="att"></div>
+            <div><canvas id="myChart" height="200"></canvas></div>
           </div>
         </div>
       </div>

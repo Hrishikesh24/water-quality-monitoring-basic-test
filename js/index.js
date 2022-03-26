@@ -7,17 +7,17 @@ var firebase = new Firebase("wqmtest-f7ebb-default-rtdb.firebaseio.com");
 
 
 firebase.on('value', function (snapshot) {
-  for (let i in snapshot.val().tds) {
-    tds.push(snapshot.val().tds[i]);
+  for (let i in snapshot.val().wqm01.tds) {
+    tds.push(snapshot.val().wqm01.tds[i]);
   }
-  for (let i in snapshot.val().ph) {
-    ph.push(snapshot.val().ph[i]);
+  for (let i in snapshot.val().wqm01.ph) {
+    ph.push(snapshot.val().wqm01.ph[i]);
   }
-  for (let i in snapshot.val().temp) {
-    temp.push(snapshot.val().temp[i]);
+  for (let i in snapshot.val().wqm01.temp) {
+    temp.push(snapshot.val().wqm01.temp[i]);
   }
-  for (let i in snapshot.val().timestamp) {
-    tS = new Date(snapshot.val().timestamp[i] * 1000).toISOString().slice(0, 19).replace('T', ' ')
+  for (let i in snapshot.val().wqm01.timestamp) {
+    tS = new Date(snapshot.val().wqm01.timestamp[i] * 1000).toISOString().slice(0, 19).replace('T', ' ')
     timestamp.push(tS);
   }
 
@@ -52,12 +52,12 @@ firebase.on('value', function (snapshot) {
 
   document.getElementById("tempLatest").innerHTML = tempItem;
   // gas.forEach((o, i, a) => a[i] = o*100/1024);
-  if (Methane.length < 5 && timestamp.length < 5) {
-    document.getElementById("att").innerHTML = `<p class="font-thin text-gray-600">The chart will be displayed once the SM saves 5 datapoints</p>`;
+  if (tds.length < 5 && timestamp.length < 5) {
+    document.getElementById("att").innerHTML = `<p class="font-thin text-gray-600">The chart will be displayed once the Water Quality Monitor saves 5 datapoints</p>`;
   }
   else {
     document.getElementById("att").innerHTML = `<p class="font-thin text-gray-600"></p>`;
-    drawGraph(Methane, Temp, Hum, sTemp, timestamp);
+    drawGraph(tds, ph, temp, timestamp);
   }
 });
 
