@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Quality Monitoring💦</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js'></script>
+<script src="js/index.js"></script>
+
+<body class="flex flex-col h-screen justify-between">
+  <header class="text-gray-600 body-font">
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+      <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+        <!-- <img src="images/teet.png" alt="Italian Trulli" class=" h-20 text-white p-2 bg-indigo-800 bg-opacity-0 rounded-full"> -->
+
+        <span class="ml-3 text-xl">Water Quality Monitor💦</span>
+      </a>
+      <button id="myButton"
+        class="inline-flex items-center bg-indigo-200 border-0 py-1 px-3 focus:outline-none hover:bg-orange-400 hover:text-white rounded-lg text-base mt-4 sm:ml-10 md:mt-0">
+        Download Spreadsheet
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+          <!-- <path d="M5 12h14M12 5l7 7-7 7"></path> -->
+          <path d="M8 17l4 4 4-4m-4-5v9"></path>
+          <path d="M20.88 18.09A5 5 0 0018 9h-1.26A8 8 0 103 16.29"></path>
+        </svg>
+      </button>
+    </div>
+  </header>
+  <section class="text-white body-font">
+    <div class="container px-5 py-5 lg:py-14 mx-auto">
+      <div class="flex flex-wrap -m-4">
+        <div id="tdsLatest" class="p-4 w-full lg:w-1/3">
+          <div
+            class="h-full shadow-2xl bg-gray-600 bg-opacity-100 px-10 pt-16 pb-16 rounded-3xl overflow-hidden text-left relative">
+            <h2 class="tracking-widest text-lg title-font font-bold text-gray-100 mb-1">Total Dissolved Solids (TDS)
+            </h2>
+            <h1 class="title-font sm:text-9xl text-6xl font-black text-white">-</h1>
+            <p class="leading-relaxed font-medium mb-3">PPM</p>
+            <p class="leading-relaxed font-thin mb-3">Last Updated: - </p>
+          </div>
+        </div>
+        <div id="phLatest" class="p-4 w-full lg:w-1/3">
+          <div
+            class="h-full shadow-2xl bg-gray-600 bg-opacity-100 px-10 pt-16 pb-16 rounded-3xl overflow-hidden text-left relative">
+            <h2 class="tracking-widest text-lg title-font font-bold text-gray-100 mb-1">pH</h2>
+            <h1 class="title-font sm:text-9xl text-6xl font-black text-white">-</h1>
+            <p class="leading-relaxed font-thin mb-3">Last Updated: - </p>
+          </div>
+        </div>
+        <div id="tempLatest" class="p-4 w-full lg:w-1/3">
+          <div
+            class="h-full shadow-2xl bg-gray-600 bg-opacity-100 px-10 pt-16 pb-16 rounded-3xl overflow-hidden text-left relative">
+            <h2 class="tracking-widest text-lg title-font font-bold text-gray-100 mb-1">Relative Temperature</h2>
+            <h1 class="title-font sm:text-9xl text-6xl font-black text-white">-</h1>
+            <p class="leading-relaxed font-medium mb-3">°C</p>
+            <p class="leading-relaxed font-thin mb-3">Last Updated: - </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="text-gray-600  body-font">
+    <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+      <span class="ml-3 text-xl">Water Quality Monitoring💦</span>
+      <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">Made with
+        🚀 by TechXcl India Pvt. Ltd. —
+        <a href="https://twitter.com/TechXcl" class="text-gray-600 ml-1" rel="noopener noreferrer"
+          target="_blank">@TechXcl</a>
+      </p>
+
+    </div>
+  </footer>
+
+</body>
+
+<script type="text/javascript">
+
+  var objectToCSVRow = function (dataObject) {
+    var dataArray = new Array;
+    for (var o in dataObject) {
+      var innerValue = dataObject[o] === null ? '' : "" + dataObject[o];
+      var result = innerValue.replace(/"/g, '""');
+      result = '"' + result + '"';
+      dataArray.push(result);
+    }
+    return dataArray.join(' ') + '\r\n';
+  }
+
+  var exportToCSV = async function (arrayOfObjects) {
+
+    var firstArray = [];
+    var secondArray = [];
+    var thirdArray = [];
+    var fourthArray = [];
+    var fifthArray = [];
+
+    firebase.once('value', function (snapshot) {
+      for (let i in snapshot.val().temp) {
+        fourthArray.push(snapshot.val().temp[i]);
+      }
+      for (let i in snapshot.val().ph) {
+        thirdArray.push(snapshot.val().ph[i]);
+      }
+      for (let i in snapshot.val().tds) {
+        secondArray.push(snapshot.val().tds[i]);
+      }
+
+      for (let i in snapshot.val().timestamp) {
+        firstArray.push(snapshot.val().timestamp[i]);
+      }
+
+    });
+    var arrayOfObjects = firstArray.map(function (value, index) {
+      return [value, secondArray[index], thirdArray[index], fourthArray[index], fifthArray[index]];
+    });
+
+    if (!arrayOfObjects.length) {
+      alert("NO DATA AVAILABLE! \nPlease turn on the WQM or Connect it to an active internet connection.");
+      return;
+    }
+    var header = ["Timestamp", "Total Dissolved Solids (in PPM)", "pH", "Relative Temperature"];
+    var csvContent = "data:text/csv;charset=utf-8,";
+
+    // headers
+    csvContent += objectToCSVRow(header);
+
+    arrayOfObjects.forEach(function (item) {
+      csvContent += objectToCSVRow(item);
+    });
+
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link); // Required for FF
+    link.click();
+    document.body.removeChild(link);
+  }
+
+
+  document.getElementById("myButton").addEventListener('click', exportToCSV); 
+</script>
+
+</html>
